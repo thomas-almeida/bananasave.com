@@ -3,13 +3,15 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function subscribeToWishlist(req, res) {
-  const { name, whatsappNumber } = req.body
+  const { name, age, whatsappNumber, surveyResponseId } = req.body
 
   try {
     const newSubscription = await prisma.wishlist.create({
       data: {
         name,
-        whatsappNumber
+        age,
+        whatsappNumber,
+        surveyResponseId
       }
     })
 
@@ -17,6 +19,7 @@ async function subscribeToWishlist(req, res) {
       message: 'success',
       data: newSubscription
     })
+    
   } catch (error) {
     console.error('Erro ao adicionar na lista', error)
     res.status(500).json({
