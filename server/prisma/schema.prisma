@@ -8,28 +8,37 @@ datasource db {
 }
 
 model survey {
-  id        String      @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  questions Questions[]
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  description     String
+  questions       questions[]
+  surveyResponses surveyResponses[]
+}
+
+model questions {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  question String
+  type     String
+  answer   Json
+  surveyId String  @db.ObjectId
+  survey   survey? @relation(fields: [surveyId], references: [id])
 }
 
 model wishlist {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
-  name           String
-  whatsappNumber String
+  id               String           @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  age              Int
+  whatsappNumber   String
+  surveyResponseId String           @db.ObjectId
+  surveyResponse   surveyResponses? @relation(fields: [surveyResponseId], references: [id])
 }
 
-model Questions {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
-  question String
-  answers  Answers[]
-  surveyId String    @db.ObjectId
-  survey   survey?   @relation(fields: [surveyId], references: [id])
-}
-
-model Answers {
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
-  answer     String
-  questionId String     @db.ObjectId
-  question   Questions? @relation(fields: [questionId], references: [id])
+model surveyResponses {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  surveyId  String     @db.ObjectId
+  answers   Json
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  survey    survey?    @relation(fields: [surveyId], references: [id])
+  wishlist  wishlist[]
 }
